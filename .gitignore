@@ -57,3 +57,9 @@ typings/
 # dotenv environment variables file
 .env
 
+# Joe backup files
+*~
+
+# git_clones except that we want the directory.
+git_clones/*
+!git_clones/.empty

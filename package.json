@@ -1,0 +1,24 @@
+{
+  "name": "chobby-launcher-backend",
+  "version": "1.0.0",
+  "description": "The backend for offering updates for the Chobby launcher for games on the Spring RTS engine.",
+  "main": "index.js",
+  "dependencies": {
+    "koa": "^2.5.0",
+    "koa-router": "^7.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tzaeru/chobby-launcher-backend.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tzaeru/chobby-launcher-backend/issues"
+  },
+  "homepage": "https://github.com/tzaeru/chobby-launcher-backend#readme"
+}
