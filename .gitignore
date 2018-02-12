@@ -62,4 +62,4 @@ typings/
 
 # git_clones except that we want the directory.
 git_clones/*
-!git_clones/.empty
+!git_clones/partial_clone_game.sh
