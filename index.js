@@ -25,15 +25,22 @@ async function pull_repos() {
   for (var i in clone_dirs)
   {
     const { stdout, stderr } = await exec('git pull', {cwd: "git_clones/" + clone_dirs[i]});
+    
+    // If we weren't up to date, create a new .tar.gz archive for the files.
+    await exec("tar --exclude .git -zcvf " + clone_dirs[i] + ".tar.gz " + clone_dirs[i], {cwd: "git_clones/"});
   }
-  
-  const minutes = 1, pull_interval = minutes * 60 * 1000;
+  // tar -cvf name.tar /path/to/directory
+  const minutes = 1, pull_interval = minutes * 30 * 1000;
   setTimeout(pull_repos, pull_interval);
 }
 pull_repos();
 
-async function ls_dist_files() {
-  const dirs = getDirectories("git_clones");
+async function ls_dist_files(dir = "") {
+  let dirs = getDirectories("git_clones");    
+  if (dir.length > 0)
+  {
+    dirs = [dir];
+  }
 
   var files_json = {};
 
@@ -43,9 +50,9 @@ async function ls_dist_files() {
 
     // ChobbyLauncher has directory dist for distribution files
     // Games have directory chobbylauncher for chobby launcher config distribution files.
-    var dist_dir = "dist/";
-    if (dir !== "ChobbyLauncher")
-      dist_dir = "chobbylauncher/";
+    var dist_dir = "";
+    if (dir !== "spring-launcher-dist")
+      dist_dir = "dist_cfg/";
 
     const { stdout, stderr } = await exec('git ls-files -s ' + dist_dir + "*", {cwd: "git_clones/" + dir});  
     // Split by newline after removing trailing newline
@@ -79,6 +86,20 @@ router.get('/files', async (ctx) => {
   ctx.body = await ls_dist_files();
 });
 
+router.get('/files/:short', async (ctx) => {
+  let dir = "";
+  if (ctx.params.short in games)
+    dir = games[ctx.params.short].repo_name;
+  if (ctx.params.short == "launcher")
+  {
+    dir = "spring-launcher-dist";
+  }
+  if (ctx.params.short == "sb")
+    dir = "SpringBoard-Core";
+    
+  ctx.body = await ls_dist_files(dir);
+});
+
 router.get('/download', async (ctx) =>
 {
   const fpath = path.join("git_clones", ctx.query.path);
@@ -86,8 +107,15 @@ router.get('/download', async (ctx) =>
 
   if (fstat.isFile()) {
     ctx.type = extname(fpath);
+    ctx.response.set('Content-disposition', 'attachment; filename=' + ctx.query.path.substring(ctx.query.path.lastIndexOf('/')+1));
+    ctx.response.set('Content-length', fstat.size);
     ctx.body = fs.createReadStream(fpath);
   }
+});
+
+router.get('/games', async(ctx) =>
+{
+  ctx.body = games;
 });
 
 app.use(router.routes());

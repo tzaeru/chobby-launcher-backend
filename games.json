@@ -1,6 +1,7 @@
 {
-    "Balanced Annihilation": {
+    "ba": {
         "repo_url": "https://github.com/Balanced-Annihilation/Balanced-Annihilation.git",
-        "repo_name": "Balanced-Annihilation"
+        "repo_name": "Balanced-Annihilation",
+        "full_name": "Balanced Annihilation"
     }
 }
